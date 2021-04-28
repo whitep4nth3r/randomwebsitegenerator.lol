@@ -431,10 +431,11 @@ function buildUniqueIntArray(length) {
   return randomInts;
 }
 
-export default function Home() {
-  const headline = getRandomHeadline();
-  const name = getRandomTechBusinessName();
-  const svgComponentsIndexArray = buildUniqueIntArray(3);
+export default function Home({
+  headline,
+  name,
+  svgComponentsIndexArray
+}) {
 
   return (
     <>
@@ -468,3 +469,17 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = () => {
+  const headline = getRandomHeadline();
+  const name = getRandomTechBusinessName();
+  const svgComponentsIndexArray = buildUniqueIntArray(3);
+
+  return {
+    props: {
+      headline,
+      name,
+      svgComponentsIndexArray,
+    },
+  };
+};
