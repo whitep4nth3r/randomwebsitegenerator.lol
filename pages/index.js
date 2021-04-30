@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { getRandomEntry } from "@whitep4nth3r/get-random-entry";
 import { getRandomHeadline } from "@whitep4nth3r/get-random-headline";
 import { getRandomTechBusinessName } from "@whitep4nth3r/get-random-tech-business-name";
 import { buildUniqueIntArray } from "../tools/utils";
@@ -417,23 +418,53 @@ const svgComponents = [
   <ZoomOutIcon />,
 ];
 
-export default function Home({ headline, businessName, svgComponentsIndexArray, usps, ctas }) {
+export default function Home({
+  headline,
+  businessName,
+  svgComponentsIndexArray,
+  usps,
+  ctas,
+  headingFontFamily,
+  bodyFontFamily,
+  ctaBgColor,
+}) {
+  function onClickButton() {
+    alert("Yolo");
+  }
+
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>randomwebsitegenerator.lol</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>{businessName}</h1>
-        <p>{headline}</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+      <header className={`${ctaBgColor} text-white w-full`}>
+        <ul className="flex flex-row max-w-6xl p-8 mx-auto space-x-20">
+          <li>Test 1</li>
+          <li>Test 2</li>
+          <li>Test 3</li>
+        </ul>
+      </header>
+
+      <main className="max-w-6xl p-8 mx-auto mt-16">
+        <h1 className={`${headingFontFamily} text-5xl mb-12`}>{businessName}</h1>
+        <h2 className={`${bodyFontFamily} text-2xl mb-24`}>{headline}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8">
           {svgComponentsIndexArray.map((int, index) => (
-            <div key={int}>
-              <div style={{ height: "20px", width: "20px" }}>{svgComponents[int]}</div>
-              <h2>{usps[index]}</h2>
-              <button type="button">{ctas[index]}</button>
+            <div
+              key={int}
+              className="flex flex-col justify-between p-8 text-center border-2 rounded-md shadow-md"
+            >
+              <div className={`p-16 text-gray-300`}>{svgComponents[int]}</div>
+              <h3 className={`${headingFontFamily} text-2xl mb-8 capitalize`}>{usps[index]}</h3>
+              <button
+                type="button"
+                className={`${ctaBgColor} text-white text-xl px-8 py-4 w-full rounded-md capitalize`}
+                onClick={() => onClickButton()}
+              >
+                {ctas[index]}
+              </button>
             </div>
           ))}
         </div>
@@ -450,6 +481,24 @@ export const getServerSideProps = () => {
   const usps = getRandomUsps(USP_COUNT);
   const ctas = getRandomCtas(USP_COUNT);
 
+  const headingFontFamily = getRandomEntry(["font-sans", "font-serif", "font-mono"]);
+  const bodyFontFamily = getRandomEntry(["font-sans", "font-serif", "font-mono"]);
+
+  const ctaBgColor = getRandomEntry([
+    "bg-red-600",
+    "bg-red-700",
+    "bg-green-700",
+    "bg-green-800",
+    "bg-blue-700",
+    "bg-blue-800",
+    "bg-indigo-600",
+    "bg-indigo-700",
+    "bg-purple-700",
+    "bg-purple-800",
+    "bg-pink-600",
+    "bg-pink-700",
+  ]);
+
   return {
     props: {
       headline,
@@ -457,6 +506,9 @@ export const getServerSideProps = () => {
       svgComponentsIndexArray,
       usps,
       ctas,
+      headingFontFamily,
+      bodyFontFamily,
+      ctaBgColor,
     },
   };
 };
