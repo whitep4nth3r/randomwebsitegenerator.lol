@@ -1,6 +1,9 @@
 import Head from "next/head";
 import { getRandomHeadline } from "@whitep4nth3r/get-random-headline";
 import { getRandomTechBusinessName } from "@whitep4nth3r/get-random-tech-business-name";
+import { buildUniqueIntArray } from "../tools/utils";
+import { getRandomUsps } from "../tools/usp";
+import { getRandomCtas } from "../tools/cta";
 
 import {
   AcademicCapIcon,
@@ -414,29 +417,7 @@ const svgComponents = [
   <ZoomOutIcon />,
 ];
 
-function getRandomInt(min, max) {
-  return Math.round(Math.random() * (max - min) + min);
-}
-
-function buildUniqueIntArray(length) {
-  const randomInts = [];
-
-  while (randomInts.length < length) {
-    const newInt = getRandomInt(0, svgComponents.length);
-    if (!randomInts.includes(newInt)) {
-      randomInts.push(newInt);
-    }
-  }
-
-  return randomInts;
-}
-
-export default function Home({
-  headline,
-  name,
-  svgComponentsIndexArray
-}) {
-
+export default function Home({ headline, businessName, svgComponentsIndexArray, usps, ctas }) {
   return (
     <>
       <Head>
@@ -445,23 +426,14 @@ export default function Home({
       </Head>
 
       <main>
-        <h1>{name}</h1>
+        <h1>{businessName}</h1>
         <p>{headline}</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-          {/* THIS NO WORKS */}
-          {svgComponents.filter((svg, index) => svgComponentsIndexArray.includes(index))}
-
-          {/* THIS NO WORKS */}
-          {svgComponentsIndexArray.map((int) => (
-            <div key={int} data-key={int} style={{ height: "20px", width: "20px" }}>
-              {svgComponents[int]}
-            </div>
-          ))}
-
-          {/* THIS WORKS */}
-          {svgComponents.map((comp, index) => (
-            <div key={index} data-key={index} style={{ height: "20px", width: "20px" }}>
-              {comp}
+          {svgComponentsIndexArray.map((int, index) => (
+            <div key={int}>
+              <div style={{ height: "20px", width: "20px" }}>{svgComponents[int]}</div>
+              <h2>{usps[index]}</h2>
+              <button type="button">{ctas[index]}</button>
             </div>
           ))}
         </div>
@@ -471,15 +443,20 @@ export default function Home({
 }
 
 export const getServerSideProps = () => {
+  const USP_COUNT = 3;
   const headline = getRandomHeadline();
-  const name = getRandomTechBusinessName();
-  const svgComponentsIndexArray = buildUniqueIntArray(3);
+  const businessName = getRandomTechBusinessName();
+  const svgComponentsIndexArray = buildUniqueIntArray(USP_COUNT, svgComponents.length);
+  const usps = getRandomUsps(USP_COUNT);
+  const ctas = getRandomCtas(USP_COUNT);
 
   return {
     props: {
       headline,
-      name,
+      businessName,
       svgComponentsIndexArray,
+      usps,
+      ctas,
     },
   };
 };
